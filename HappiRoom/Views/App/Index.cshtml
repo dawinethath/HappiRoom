@@ -1,0 +1,1415 @@
+﻿@{
+    ViewBag.Title = "Happi Room | Lina Shop";
+}
+
+<div id="wrapperApplication"></div>
+
+<!--views-->
+<script id="layout" type="text/x-kendo-template">
+    <div id="layout-view">
+    </div>
+</script>
+<script id="404" type="text/x-kendo-template">
+    <div class="container-fluid menu-hidden sidebar-hidden-phone fluid menu-left">
+        <div class="row">
+            <div class="span12">
+                <div>
+                    <h3>Oops! We are running into a wall</h3>
+                    <p>Try going <a href="\\#">back</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+<script id="index" type="text/x-kendo-template">
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="innerLR">
+                <div id="content"></div>
+            </div>
+        </div>
+    </div>
+</script>
+<script id="home" type="text/x-kendo-template">
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12">
+                <h1>Welcome to Happi Room​</h1>
+                <ul>
+                    <li><a href="/app#happi_center">HAPPI CENTER | ហេបភីសេនធឺ</a></li>
+                    <li><a href="/app#uInvoice_print">PRINT INVOICE​​​​​ | បោះពុម្ពវិក្កយបត្រ</a></li>                   
+                </ul>
+
+                <hr />
+               
+                <h1>Welcome to Lottery​</h1>
+                <ul>
+                    <li><a href="/app#lottery_day">RECORD LOTTERY RESULT DAY TIME | កត់ត្រាលិទ្ធផលឆ្នោតពេលថ្ងៃ</a></li>
+                    <li><a href="/app#lottery_night">RECORD LOTTERY RESULT NIGHT TIME | កត់ត្រាលិទ្ធផលឆ្នោតពេលយប់</a></li>
+                    <br />
+                    <li><a href="/app#lottery_estimate_day">ESTIMATE RESULT​​​​​ DAY TIME | មិកលិទ្ធផលឆ្នោត</a></li>
+                    <li><a href="/app#lottery_estimate_night">ESTIMATE RESULT​​​​​ NIGHT TIME | មិកលិទ្ធផលឆ្នោត</a></li>                 
+                </ul>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="happiCenter" type="text/x-kendo-template">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div id="example" class="k-content">
+                    <div class="row">
+                        <br>
+                        <div class="col-md-3">
+                            <input id="searchField"
+                                   class="k-textbox"
+                                   data-bind="value: searchField"
+                                   placeholder="លេខបន្ទប់" />
+
+                            <a id="search" class="k-button" data-bind="click: search"><span class="k-icon k-i-search"></span></a>                            
+
+                            <br><br>
+
+                            <div id="gridSidebar"></div>
+                        </div>
+
+                        <div class="col-md-9">
+                            <div id="detail"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+<script id="roomListTmpl" type="text/x-kendo-tmpl">
+    <tr>
+        <td>
+            #=number#
+        </td>
+        <td align="right">
+            #if(status>0){#
+            <span class="glyphicon glyphicon-user"></span>
+            #}else{#
+            Free
+            #}#
+        </td>
+    </tr>
+</script>
+
+<script id="invoice" type="text/x-kendo-template">
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12">
+                <h1>Welcome to Lottery</h1>
+
+                <input id="ddltypes" />
+                <input id="sdatepicker" />
+                <input id="edatepicker" />
+
+                <a id="search" class="k-button"><span class="k-icon k-i-search"></span></a>
+
+                <br />
+
+                <div id="grid"></div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="uInvoicePrint" type="text/x-kendo-template">
+    <div class="row">
+        <div class="col-md-12">
+            <div id="example" class="k-content">
+                <div class="hidden-print" align="center">                    
+                    <input class="k-textbox"
+                           data-bind="value: searchField, events:{change: search}"
+                           placeholder="លេខបន្ទប់" />
+
+                    <a id="search" class="k-button" data-bind="click: search"><span class="k-icon k-i-search"></span></a> |
+                    <button class="btn btn-icon btn-inverse" onclick="javascript:window.print()">បោះពុម្ព</button> |
+                    <input type="checkbox" data-bind="click: printData" /> ប្រើក្រដាសពុម្ព |                    
+                    <input type="checkbox" data-bind="click: printFrame" /> ពុម្ពក្រដាស 
+                    <br /><br />
+                    <div id="pager" class="k-pager-wrap"
+                         data-role="pager" data-bind="source: invoiceList"
+                         style="width: 510px;"></div>                                         
+                </div>               
+
+                <div align="center">
+                    <div data-role="listview"
+                         data-template="uInvoice-print-template"
+                         data-bind="source: invoiceList"                        
+                         style="width: 298px; border:none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+<script id="uInvoice-print-template" type="text/x-kendo-tmpl">
+    <div class="page-wrap">
+        <h3 class="hiddenPrint" align="center">វិក្កយបត្រ</h3>
+
+        <table width="100%">
+            <tr>
+                <td>បន្ទប់</td>
+                <td class="hiddenPrintFrame">
+                    #=room_number#
+                    -
+                    #=customer_name#
+                </td>
+                <td align="right">ប្រចាំខែ</td>
+                <td class="hiddenPrintFrame" align="right">#=kendo.toString(new Date(month_of), "MM-yyyy")#</td>
+            </tr>
+            <tr>
+                <td>ថ្ងៃចូល</td>
+                <td class="hiddenPrintFrame">#=kendo.toString(new Date(date_in), "dd-MM-yyyy")#</td>
+                <td align="right"></td>
+                <td align="right"></td>
+            </tr>
+        </table>
+
+        <br />
+
+        <table id="myTable" class="table-condensed" width="100%">
+            <tr class="hiddenPrint">
+                <th>បរិយាយ</th>
+                <th>អំនាន</th>
+                <th>ចំនួន</th>
+                <th>គិត</th>
+                <th>តំលៃ</th>
+                <th>ទឹកប្រាក់</th>
+            </tr>
+            <tr></tr>
+            <tr class="hiddenPrintFrame">
+                <td>ឈ្នួលបន្ទប់</td>
+                <td></td>
+                <td align="right">1</td>
+                <td></td>
+                <td align="right">#=kendo.toString(rental, 'c0')#</td>
+                <td align="right">#=kendo.toString(rental, 'c0')#</td>
+            </tr>
+            <tr class="hiddenPrintFrame">
+                <td>ថ្លៃទឹក</td>
+                <td align="center">
+                    #=wfrom#
+                    -
+                    #=wto#
+                </td>
+                <td align="right">
+                    #=wqty# m<sup>3</sup>
+                </td>
+                <td align="right">
+                    #=wadd_on#
+                </td>
+                <td align="right">
+                    #=kendo.toString(wprice, 'c0', 'km-KH')#
+                </td>
+                <td align="right">
+                    #=kendo.toString(wamt, 'c0', 'km-KH')#
+                </td>
+            </tr>
+            #if(eamt>0){#
+            <tr class="hiddenPrintFrame">
+                <td>ថ្លៃអគ្គីសនី</td>
+                <td align="center">
+                    #=efrom#
+                    -
+                    #=eto#
+                </td>
+                <td align="right">
+                    #=eqty# kWh
+                </td>
+                <td align="right">
+                    #=eadd_on#
+                </td>
+                <td align="right">
+                    #=kendo.toString(eprice, 'c0', 'km-KH')#
+                </td>
+                <td align="right">
+                    #=kendo.toString(eamt, 'c0', 'km-KH')#
+                </td>
+            </tr>
+            #}#
+            #if(trash>0){#
+            <tr>
+                <td>ថ្លៃសំរាម</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td align="right">
+                    #=kendo.toString(trash, 'c')#
+                </td>
+            </tr>
+            #}#
+            #if(service>0){#
+            <tr>
+                <td><span style="font-size:xx-small;">សេវាបង់ប្រាក់</span></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td align="right">
+                    #=kendo.toString(service, 'c')#
+                </td>
+            </tr>
+            #}#           
+            #if(deposit>0){#
+            <tr class="hiddenPrintFrame">
+                <td>ប្រាក់កក់</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td align="right">
+                    (#=kendo.toString(deposit, 'c0')#)
+                </td>
+            </tr>
+            #}#           
+        </table>     
+
+        <div class="hiddenPrintFrame" align="right">សរុបៈ #=kendo.toString(total, 'c3')#</div>
+    </div>    
+
+    <footer class="site-footer" data-bind="invisible: framePrint">
+        <div class="hiddenprintframe">
+            <p class="hiddenPrint" align="left">
+                *ចំណាំ៖ <br />
+                - បើមិនចង់ស្នាក់នៅបន្តត្រូវទូទាត់ប្រាក់ឪ្យគ្រប់សំរាប់ខែចាស់ <br />
+                - បើសិនជាស្នាក់នៅបន្តលើស​ 1​ ថ្ងៃនឹងត្រូវគិតតម្លៃ 1 ខែ <br />
+                - បើឈប់ស្នាក់នៅត្រូវឪ្យដំណឹងមុន 1អាទិត្យនៃថ្ងៃចូលស្នាក់
+            </p>
+        </div>
+    </footer>
+</script>
+<style scoped>
+    * {
+        margin: 0;
+    }
+
+    html, body {
+        height: 100%;
+    }
+
+    #myTable {        
+        font-size: x-small;       
+    }
+
+    table {
+        border-collapse: collapse;              
+    }
+
+    table th {
+        border: 1px solid black;
+    }
+
+    .page-wrap {
+        min-height: 360px;       
+        page-break-before: always;
+    }
+
+    .site-footer {
+        font-size: x-small;                
+        bottom: 0px;
+    }
+</style>
+
+<script id="lotteryDay" type="text/x-kendo-template">
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12">
+                <div id="example">
+                    <h1>Lottery Day Time</h1>
+                                       
+                    <input id="sdatepicker" />
+                    <input id="edatepicker" />
+
+                    <a id="search" class="k-button"><span class="k-icon k-i-search"></span></a>
+
+                    <br /><br />
+
+                    <table class="table-condensed">
+                        <thead>
+                            <tr>
+                                <th>ពេល</th>
+                                <th>កាលបរិច្ឆេទ</th>
+                                <th>A</th>                                
+                                <th>B</th>
+                                <th>C</th>
+                                <th>D</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>​DAY</td>
+                                <td><input id="dates" name="dates" required data-required-msg="*ត្រូវការ កាលបរិច្ឆេទ​" style="width:90px;" /></td>
+                                <td><input id="a1" name="a1" required data-required-msg="*ត្រូវការ A1" style="width:60px;" /></td>                                
+                                <td><input id="b" name="b" required data-required-msg="*ត្រូវការ B" style="width:60px;" /></td>
+                                <td><input id="c" name="c" required data-required-msg="*ត្រូវការ C" style="width:60px;" /></td>
+                                <td><input id="d" name="d" required data-required-msg="*ត្រូវការ D" style="width:60px;" /></td>
+                                <td><a id="save" class="k-button"><span class="k-icon k-i-plus"></span></a></td>
+                            </tr>
+                        </tbody>
+                    </table>                 
+
+                    <div id="status"></div>
+
+                    <br />
+
+                    <div id="grid"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="lotteryNight" type="text/x-kendo-template">
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12">
+                <div id="example">
+                    <h1>Lottery Night Time</h1>
+
+                    <input id="sdatepicker" />
+                    <input id="edatepicker" />
+
+                    <a id="search" class="k-button"><span class="k-icon k-i-search"></span></a>
+
+                    <br /><br />
+
+                    <table class="table-condensed">
+                        <thead>
+                            <tr>
+                                <th>ពេល</th>
+                                <th>កាលបរិច្ឆេទ</th>
+                                <th>A1</th>
+                                <th>A2</th>
+                                <th>A3</th>
+                                <th>A4</th>
+                                <th>B</th>
+                                <th>C</th>
+                                <th>D</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>​NIGHT</td>
+                                <td><input id="dates" name="dates" required data-required-msg="*ត្រូវការ កាលបរិច្ឆេទ​" style="width:90px;" /></td>
+                                <td><input id="a1" name="a1" required data-required-msg="*ត្រូវការ A1" style="width:60px;" /></td>
+                                <td><input id="a2" name="a2" required data-required-msg="*ត្រូវការ A2" style="width:60px;" /></td>
+                                <td><input id="a3" name="a3" required data-required-msg="*ត្រូវការ A3" style="width:60px;" /></td>
+                                <td><input id="a4" name="a4" required data-required-msg="*ត្រូវការ A4" style="width:60px;" /></td>
+                                <td><input id="b" name="b" required data-required-msg="*ត្រូវការ B" style="width:60px;" /></td>
+                                <td><input id="c" name="c" required data-required-msg="*ត្រូវការ C" style="width:60px;" /></td>
+                                <td><input id="d" name="d" required data-required-msg="*ត្រូវការ D" style="width:60px;" /></td>
+                                <td><a id="save" class="k-button"><span class="k-icon k-i-plus"></span></a></td>
+                            </tr>
+                        </tbody>
+                    </table>                   
+
+                    <div id="status"></div>
+
+                    <br />
+
+                    <div id="grid"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="lotteryEstimateDay" type="text/x-kendo-template">
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12">
+                <h1>Estimate Lottery Day Time</h1>
+               
+                <input id="sdatepicker" />
+                <input id="edatepicker" />
+
+                <a id="search" class="k-button"><span class="k-icon k-i-search"></span></a>
+
+                <br /><br />
+
+                <div class="row-fluid">
+                    <div class="span12">
+                        <div class="col-lg-3">
+                            <div id="ga1"></div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div id="gb"></div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div id="gc"></div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div id="gd"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="lotteryEstimateNight" type="text/x-kendo-template">
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12">
+                <h1>Estimate Lottery Night Time</h1>
+
+                <input id="sdatepicker" />
+                <input id="edatepicker" />
+
+                <a id="search" class="k-button"><span class="k-icon k-i-search"></span></a>
+
+                <br /><br />
+
+                
+                <table width="100%">
+                    <tr>
+                        <td>
+                            <div id="ga1"></div>
+                        </td>
+                        <td>
+                            <div id="ga2"></div>
+                        </td>
+                        <td>
+                            <div id="ga3"></div>
+                        </td>
+                        <td>
+                            <div id="ga4"></div>
+                        </td>
+                        <td>
+                            <div id="gb"></div>
+                        </td>
+                        <td>
+                            <div id="gc"></div>
+                        </td>
+                        <td>
+                            <div id="gd"></div>
+                        </td>
+                    </tr>
+                </table>
+               
+            </div>
+        </div>
+    </div>
+</script>
+
+<script>
+    var app = app || {};
+    app.pageloaded = {};
+
+    app.ds = (function () {
+        var billDS = new kendo.data.DataSource({
+            transport: {
+                create: {
+                    url: "/api/Bills",
+                    contentType: "application/json",
+                    type: "POST"
+                },
+                read: {
+                    url: "/api/Bills",
+                    contentType: "application/json"
+                },
+                update: {
+                    url: function (bill) {
+                        return "/api/Bills/" + bill.id;
+                    },
+                    contentType: "application/json",
+                    type: "PUT"
+                },
+                destroy: {
+                    url: function (bill) {
+                        return "/api/Bills/" + bill.id;
+                    },
+                    contentType: "application/json",
+                    type: "DELETE"
+                },
+                parameterMap: function (data, operation) {
+                    return JSON.stringify(data);
+                }
+            },
+            serverPaging: true,
+            serverFiltering: true,
+            serverSorting: true,
+            schema: {
+                data: "Data",
+                total: "Total",
+                model: {
+                    id: "id",
+                    fields: {
+                        id: { type: "number" }
+                    }
+                }
+            }
+        });       
+
+        var invoiceDS = new kendo.data.DataSource({
+            transport: {
+                create: {
+                    url: "/api/Invoices",
+                    contentType: "application/json",
+                    type: "POST"
+                },
+                read: {
+                    url: "/api/Invoices",
+                    contentType: "application/json"
+                },
+                update: {
+                    url: function (invoice) {
+                        return "/api/Invoices/" + invoice.id;
+                    },
+                    contentType: "application/json",
+                    type: "PUT"
+                },
+                destroy: {
+                    url: function (invoice) {
+                        return "/api/Invoices/" + invoice.id;
+                    },
+                    contentType: "application/json",
+                    type: "DELETE"
+                },
+                parameterMap: function (data, operation) {
+                    return JSON.stringify(data);
+                }
+            },
+            serverPaging: true,
+            serverFiltering: true,
+            serverSorting: true,
+            schema: {
+                data: "Data",
+                total: "Total",
+                model: {
+                    id: "id",
+                    fields: {
+                        id: { type: "number" }
+                    }
+                }
+            }
+        });
+
+        var lotteryRecordDS = new kendo.data.DataSource({
+            transport: {
+                create: {
+                    url: "/api/LotteryRecords",
+                    contentType: "application/json",
+                    type: "POST"
+                },
+                read: {
+                    url: "/api/LotteryRecords",
+                    contentType: "application/json"
+                },
+                update: {
+                    url: function (LotteryRecord) {
+                        return "/api/LotteryRecords/" + LotteryRecord.id;
+                    },
+                    contentType: "application/json",
+                    type: "PUT"
+                },
+                destroy: {
+                    url: function (LotteryRecord) {
+                        return "/api/LotteryRecords/" + LotteryRecord.id;
+                    },
+                    contentType: "application/json",
+                    type: "DELETE"
+                },
+                parameterMap: function (data, operation) {
+                    return JSON.stringify(data);
+                }
+            },
+            serverPaging: true,
+            serverFiltering: true,
+            serverSorting: true,
+            schema: {
+                data: "Data",
+                total: "Total",
+                model: {
+                    id: "id",
+                    fields: {
+                        id: { type: "number", editable: false },
+                        types: { type: "string", validation: { required: true } },
+                        dates: { type: "date", validation: { required: true } },
+                        a1: { type: "number", validation: { min: 0, required: true } },
+                        a2: { type: "number", validation: { min: 0, required: true } },
+                        a3: { type: "number", validation: { min: 0, required: true } },
+                        a4: { type: "number", validation: { min: 0, required: true } },
+                        b: { type: "number", validation: { min: 0, required: true } },
+                        c: { type: "number", validation: { min: 0, required: true } },
+                        d: { type: "number", validation: { min: 0, required: true } }
+
+                    }
+                }
+            }            
+        });
+
+        var viewModel = kendo.observable({
+            pageLoad : function(){
+
+            }            
+        });
+
+        return {            
+            billDS: billDS,
+            invoiceDS: invoiceDS,
+            lotteryRecordDS: lotteryRecordDS,
+
+            viewModel: viewModel
+        };
+    }());
+
+    app.example = (function () {
+        var viewModel = kendo.observable({
+
+        });
+
+        return viewModel;
+    }());
+
+    app.happiCenter = (function () {
+        var viewModel = kendo.observable({
+            searchField     : "",
+            searchStatus    : null,
+
+            statusList: [
+                {id:0, name:"ទំនេរ"},
+                {id:1, name:"កំពុងប្រើ"}
+            ],
+
+            search          : function(){
+                var para = Array();
+                var field = this.get("searchField");
+                var status = this.get("searchStatus");
+
+                if(field!==""){
+                    para.push(
+                        { field: "number", operator: "eq", value: field }
+                    );
+                }
+
+                if(status!==null){
+                    para.push(
+                        { field: "status", operator: "eq", value: kendo.parseInt(status) }
+                    );
+                }
+
+                if(para.length>0){
+                    app.ds.roomDS.filter(para);
+                }else{
+                    app.ds.roomDS.filter({ field: "id", operator: "gt", value: 0 });
+                }
+            }
+        });
+
+        return {
+            viewModel: viewModel
+        };
+    }());
+    
+    app.example = (function () {
+        var viewModel = kendo.observable({
+
+        });
+
+        return viewModel;
+    }());
+    
+    app.uInvoicePrint = (function () {
+       
+        var viewModel = kendo.observable({
+            framePrint : false,
+            searchField : "",
+            
+            invoiceList : app.ds.invoiceDS,
+
+            pageLoad    : function(){
+                
+            },
+            search: function (e) {
+                e.preventDefault();
+
+                var searchField = this.get("searchField");
+
+                if(searchField){
+                    app.ds.invoiceDS.query({
+                        page: 1,
+                        pageSize: 1,
+                        filter: { field:"room_number", operator:"eq", value: searchField }
+                    });                    
+                }else{
+                    app.ds.invoiceDS.query({
+                        page: 1,
+                        pageSize: 50                    
+                    });
+                }
+               
+            },
+            printData 		: function(e) {
+                var tar = e.target;
+                if(tar.checked) {
+                    $(".hiddenPrint").css("visibility", "hidden");
+                } else {
+                    $(".hiddenPrint").css("visibility", "visible");
+                }
+            },
+            printFrame 		: function(e) {
+                var tar = e.target;
+                if(tar.checked) {
+                    $(".hiddenPrintFrame").css("visibility", "hidden");
+                } else {
+                    $(".hiddenPrintFrame").css("visibility", "visible");
+                }
+            }
+        });
+        
+        return viewModel;        
+    }());
+
+
+    /* Application Views ======================================================================================================================== */
+    app.view = (function () {
+        var missingModel = kendo.observable({
+            back: function (e) {
+                e.preventDefault();
+                window.history.go(-1);
+            }
+        });
+
+        //Layouts and views
+        var layout = new kendo.Layout("#layout");
+        var index = new kendo.Layout("#index");
+        var missing = new kendo.View("#404", { model: missingModel });
+
+        var home = new kendo.View("#home");
+        var happiCenter = new kendo.Layout("#happiCenter", { model: app.happiCenter.viewModel });
+        var uInvoicePrint = new kendo.View("#uInvoicePrint", { model: app.uInvoicePrint });
+        var lotteryDay = new kendo.View("#lotteryDay");
+        var lotteryNight = new kendo.View("#lotteryNight");
+        var lotteryEstimateDay = new kendo.View("#lotteryEstimateDay");
+        var lotteryEstimateNight = new kendo.View("#lotteryEstimateNight");
+
+        return {
+            layout: layout,
+            index: index,
+            missing: missing,
+
+            home        : home,
+            happiCenter : happiCenter,           
+            uInvoicePrint: uInvoicePrint,
+            lotteryDay  : lotteryDay,
+            lotteryNight: lotteryNight,
+            lotteryEstimateDay: lotteryEstimateDay,
+            lotteryEstimateNight: lotteryEstimateNight
+        };
+    }());
+
+    /* Router section */
+    app.router = new kendo.Router({
+        init: function () {
+            app.view.layout.render("#wrapperApplication");
+        },
+        routeMissing: function (e) {
+            app.view.layout.showIn("#layout-view", app.view.missing);
+        }
+    });
+
+    app.router.route("/", function () {
+        app.view.layout.showIn("#layout-view", app.view.home);
+    });
+
+    app.router.route("happi_center", function(){
+        app.view.layout.showIn("#layout-view", app.view.happiCenter);
+        //app.view.happiCenter.showIn("#detail", app.view.dashboard);
+
+        $("#searchField").keypress(function(e) {      
+            var keycode = e.keyCode ? e.keyCode : e.which;  
+            if(keycode === 13) {
+                e.preventDefault();                                    
+            }          
+        });
+
+        var grid = $("#gridSidebar").kendoGrid({
+            dataSource: app.ds.roomDS,
+            pageable: true,
+            selectable: true,
+            columns: [
+                { title: ""}
+            ],
+            height: "450px",
+            rowTemplate: kendo.template($("#roomListTmpl").html()),
+            change: function(){
+                var selected = this.select();
+                var data = this.dataItem(selected);
+                //app.router.navigate("#customer/"+ data.id, false);
+
+                //app.view.happiCenter.showIn("#detail", app.view.happiSummary);                
+            }
+        }).data("kendoGrid");
+    });
+
+    app.router.route("uInvoice_print(/:id)", function(id){
+        app.view.layout.showIn("#layout-view", app.view.uInvoicePrint);
+        app.invoicePrint.pageLoad();
+    });
+
+    app.router.route("lottery_day", function () {
+        app.view.layout.showIn("#layout-view", app.view.lotteryDay);
+       
+        $("#grid").kendoGrid({
+            dataSource: app.ds.lotteryRecordDS,
+            autoBind: false,
+            pageable: true,            
+            columns: [                
+                { field: "types", title: "Time", editor: typesDropDownEditor },                
+                { field: "dates", title: "Date", format: "{0: dd-MM-yyyy}" },
+                { field: "a1", title: "A" },                
+                { field: "b", title: "B" },
+                { field: "c", title: "C" },
+                { field: "d", title: "D" },
+                { command: ["edit", "destroy"], title: "&nbsp;", width: "250px" }],
+            editable: "popup"
+        });
+
+        function typesDropDownEditor(container, options) {
+            $('<input required data-text-field="name" data-option-label="(--Select Time--)" data-value-field="id" data-bind="value:' + options.field + '"/>')
+                .appendTo(container)
+                .kendoDropDownList({
+                    autoBind: false,
+                    dataSource: [
+                        { id: "DAY", name: "DAY" },
+                        { id: "NIGHT", name: "NIGHT"}
+                    ]
+                });
+        }
+
+        var sdate = $("#sdatepicker").kendoDatePicker({
+            value: new Date,
+            format: "yyyy-MM-dd"
+        });
+
+        var edate = $("#edatepicker").kendoDatePicker({
+            value: new Date(),
+            format: "yyyy-MM-dd"
+        });   
+
+        var dates = $("#dates").kendoMaskedTextBox({
+            mask: "0000-00-00"
+        });
+
+        var a1 = $("#a1").kendoNumericTextBox({
+            format: "n0",
+            min: 0,
+            max: 99,
+            step: 1
+        });        
+
+        var b = $("#b").kendoNumericTextBox({
+            format: "n0",
+            min: 0,
+            max: 99,
+            step: 1
+        });
+
+        var c = $("#c").kendoNumericTextBox({
+            format: "n0",
+            min: 0,
+            max: 99,
+            step: 1
+        });
+
+        var d = $("#d").kendoNumericTextBox({
+            format: "n0",
+            min: 0,
+            max: 99,
+            step: 1
+        });
+
+        var validator = $("#example").kendoValidator().data("kendoValidator"),
+			status = $("#status");
+
+        $("#save").click(function (e) {
+            e.preventDefault();
+
+            if (validator.validate()) {
+                app.ds.lotteryRecordDS.add({
+                    types: "DAY",
+                    dates: dates.val(),
+                    a1: a1.val(),
+                    a2: -1,
+                    a3: -1,
+                    a4: -1,
+                    b: b.val(),
+                    c: c.val(),
+                    d: d.val()
+                });
+                app.ds.lotteryRecordDS.sync();
+                app.ds.lotteryRecordDS.bind("requestEnd", function (e) {
+                    if(e.type=="create"){
+                        app.ds.lotteryRecordDS.fetch();
+                    }                   
+                });
+                                
+                 status.text("កត់ត្រាបានសំរេច")
+                  .removeClass("alert alert-error")
+                  .addClass("alert alert-success");
+                 status.show();
+                 setTimeout(function () {
+                     status.hide();
+                 }, 4000);
+            } else {
+                status.text("សូមត្រួតពិនិត្រឪ្យបានត្រឹមត្រូវម្ដងទៀត")
+	                .removeClass("alert alert-success")
+		            .addClass("alert alert-error");
+            }
+        });
+
+        $("#search").click(function (e) {
+            e.preventDefault();
+
+            app.ds.lotteryRecordDS.query({
+                page: 1,
+                pageSize: 100,
+                filter: [
+                    { field: "types", operator: "eq", value: "DAY" },
+                    { field: "dates", operator: ">=", value: new Date(sdate.val()) },
+                    { field: "dates", operator: "<=", value: new Date(edate.val()) }
+                ]
+            });
+        });
+
+    });
+
+    app.router.route("lottery_night", function () {
+        app.view.layout.showIn("#layout-view", app.view.lotteryNight);
+       
+        $("#grid").kendoGrid({
+            dataSource: app.ds.lotteryRecordDS,
+            autoBind: false,
+            pageable: true,            
+            columns: [
+                { field: "types", title: "Time", editor: typesDropDownEditor },
+                { field: "dates", title: "Date", format: "{0: dd-MM-yyyy}" },
+                { field: "a1", title: "A1" },
+                { field: "a2", title: "A2" },
+                { field: "a3", title: "A3" },
+                { field: "a4", title: "A4" },
+                { field: "b", title: "B" },
+                { field: "c", title: "C" },
+                { field: "d", title: "D" },
+                { command: ["edit", "destroy"], title: "&nbsp;", width: "250px" }],
+            editable: "popup"
+        });
+
+        function typesDropDownEditor(container, options) {
+            $('<input required data-text-field="name" data-option-label="(--Select Time--)" data-value-field="id" data-bind="value:' + options.field + '"/>')
+                .appendTo(container)
+                .kendoDropDownList({
+                    autoBind: false,
+                    dataSource: [
+                        { id: "DAY", name: "DAY" },
+                        { id: "NIGHT", name: "NIGHT" }
+                    ]
+                });
+        }
+
+        var sdate = $("#sdatepicker").kendoDatePicker({
+            value: new Date,
+            format: "yyyy-MM-dd"
+        });
+
+        var edate = $("#edatepicker").kendoDatePicker({
+            value: new Date(),
+            format: "yyyy-MM-dd"
+        });
+
+        var dates = $("#dates").kendoMaskedTextBox({
+            mask: "0000-00-00"
+        });
+
+        var a1 = $("#a1").kendoNumericTextBox({
+            format: "n0",
+            min: 0,
+            max: 99,
+            step: 1
+        });
+
+        var a2 = $("#a2").kendoNumericTextBox({
+            format: "n0",
+            min: 0,
+            max: 99,
+            step: 1
+        });
+
+        var a3 = $("#a3").kendoNumericTextBox({
+            format: "n0",
+            min: 0,
+            max: 99,
+            step: 1
+        });
+
+        var a4 = $("#a4").kendoNumericTextBox({
+            format: "n0",
+            min: 0,
+            max: 99,
+            step: 1
+        });
+
+        var b = $("#b").kendoNumericTextBox({
+            format: "n0",
+            min: 0,
+            max: 99,
+            step: 1
+        });
+
+        var c = $("#c").kendoNumericTextBox({
+            format: "n0",
+            min: 0,
+            max: 99,
+            step: 1
+        });
+
+        var d = $("#d").kendoNumericTextBox({
+            format: "n0",
+            min: 0,
+            max: 99,
+            step: 1
+        });
+
+        var validator = $("#example").kendoValidator().data("kendoValidator"),
+			status = $("#status");
+
+        $("#save").click(function (e) {
+            e.preventDefault();
+
+            if (validator.validate()) {
+                app.ds.lotteryRecordDS.add({
+                    types: "NIGHT",
+                    dates: dates.val(),
+                    a1: a1.val(),
+                    a2: a2.val(),
+                    a3: a3.val(),
+                    a4: a4.val(),
+                    b: b.val(),
+                    c: c.val(),
+                    d: d.val()
+                });
+                app.ds.lotteryRecordDS.sync();
+                app.ds.lotteryRecordDS.bind("requestEnd", function (e) {
+                    if(e.type=="create"){
+                        app.ds.lotteryRecordDS.read();
+                    }                    
+                });
+
+                status.text("កត់ត្រាបានសំរេច")
+                 .removeClass("alert alert-error")
+                 .addClass("alert alert-success");
+                status.show();
+                setTimeout(function () {
+                    status.hide();
+                }, 4000);
+            } else {
+                status.text("សូមត្រួតពិនិត្រឪ្យបានត្រឹមត្រូវម្ដងទៀត")
+	                .removeClass("alert alert-success")
+		            .addClass("alert alert-error");
+            }
+        });
+
+        $("#search").click(function (e) {
+            e.preventDefault();
+
+            app.ds.lotteryRecordDS.query({
+                page: 1,
+                pageSize: 100,
+                filter: [
+                    { field: "types", operator: "eq", value: "NIGHT" },
+                    { field: "dates", operator: ">=", value: new Date(sdate.val()) },
+                    { field: "dates", operator: "<=", value: new Date(edate.val()) }
+                ]
+            });
+        });
+
+    });
+
+    app.router.route("lottery_estimate_day", function () {
+        app.view.layout.showIn("#layout-view", app.view.lotteryEstimateDay);
+        var a1DS = new kendo.data.DataSource({
+            data: []
+        });
+        var bDS = new kendo.data.DataSource({
+            data: []
+        });
+        var cDS = new kendo.data.DataSource({
+            data: []
+        });
+        var dDS = new kendo.data.DataSource({
+            data: []
+        });
+        
+        $("#ga1").kendoGrid({
+            dataSource: a1DS,
+            autoBind: false,          
+            sortable: true,                        
+            columns: [               
+                { field: "no", title: "លេខ" },
+                { field: "a1", title: "A" }                
+            ]
+        });
+
+        $("#gb").kendoGrid({
+            dataSource: bDS,
+            autoBind: false,
+            sortable: true,
+            columns: [
+                { field: "no", title: "លេខ" },
+                { field: "b", title: "B" }
+            ]
+        });
+
+        $("#gc").kendoGrid({
+            dataSource: cDS,
+            autoBind: false,
+            sortable: true,
+            columns: [
+                { field: "no", title: "លេខ" },
+                { field: "c", title: "C" }
+            ]
+        });
+
+        $("#gd").kendoGrid({
+            dataSource: dDS,
+            autoBind: false,
+            sortable: true,
+            columns: [
+                { field: "no", title: "លេខ" },
+                { field: "d", title: "D" }
+            ]
+        });
+       
+        var sdate = $("#sdatepicker").kendoDatePicker({
+            value: new Date,
+            format: "yyyy-MM-dd"
+        });
+
+        var edate = $("#edatepicker").kendoDatePicker({
+            value: new Date(),
+            format: "yyyy-MM-dd"
+        });
+
+        $("#search").click(function (e) {
+            e.preventDefault();
+
+            app.ds.lotteryRecordDS.query({
+                page: 1,
+                pageSize: 100,
+                filter: [
+                    { field: "types", operator: "eq", value: "DAY" },
+                    { field: "dates", operator: ">=", value: new Date(sdate.val()) },
+                    { field: "dates", operator: "<=", value: new Date(edate.val()) }
+                ]
+            });
+            app.ds.lotteryRecordDS.bind("requestEnd", function (e) {
+                var data = e.response.Data;                
+                
+                for (i = 0; i < 100; i++) {
+                    var a1 = 0, b = 0, c = 0, d = 0;
+
+                    for (j = 0; j < data.length; j++) {
+                        var value = data[j];
+                       
+                        if (value.a1 == i) { a1++ };                        
+                        if (value.b == i) { b++ };
+                        if (value.c == i) { c++ };
+                        if (value.d == i) { d++ };
+                    }
+
+                    a1DS.add(
+                         { "no": i, "a1": a1 }
+                    );
+                    bDS.add(
+                         { "no": i, "b": b }
+                    );
+                    cDS.add(
+                         { "no": i, "c": c }
+                    );
+                    dDS.add(
+                         { "no": i, "d": d }
+                    );
+                }                
+            });
+        });
+
+
+    });
+
+    app.router.route("lottery_estimate_night", function () {
+        app.view.layout.showIn("#layout-view", app.view.lotteryEstimateNight);
+        var a1DS = new kendo.data.DataSource({
+            data: []
+        });
+        var a2DS = new kendo.data.DataSource({
+            data: []
+        });
+        var a3DS = new kendo.data.DataSource({
+            data: []
+        });
+        var a4DS = new kendo.data.DataSource({
+            data: []
+        });
+        var bDS = new kendo.data.DataSource({
+            data: []
+        });
+        var cDS = new kendo.data.DataSource({
+            data: []
+        });
+        var dDS = new kendo.data.DataSource({
+            data: []
+        });
+
+        $("#ga1").kendoGrid({
+            dataSource: a1DS,
+            autoBind: false,
+            sortable: true,
+            columns: [
+                { field: "no", title: "លេខ" },
+                { field: "a1", title: "A1" }
+            ]
+        });
+
+        $("#ga2").kendoGrid({
+            dataSource: a2DS,
+            autoBind: false,
+            sortable: true,
+            columns: [
+                { field: "no", title: "លេខ" },
+                { field: "a2", title: "A2" }
+            ]
+        });
+
+        $("#ga3").kendoGrid({
+            dataSource: a3DS,
+            autoBind: false,
+            sortable: true,
+            columns: [
+                { field: "no", title: "លេខ" },
+                { field: "a3", title: "A3" }
+            ]
+        });
+
+        $("#ga4").kendoGrid({
+            dataSource: a4DS,
+            autoBind: false,
+            sortable: true,
+            columns: [
+                { field: "no", title: "លេខ" },
+                { field: "a4", title: "A4" }
+            ]
+        });
+
+        $("#gb").kendoGrid({
+            dataSource: bDS,
+            autoBind: false,
+            sortable: true,
+            columns: [
+                { field: "no", title: "លេខ" },
+                { field: "b", title: "B" }
+            ]
+        });
+
+        $("#gc").kendoGrid({
+            dataSource: cDS,
+            autoBind: false,
+            sortable: true,
+            columns: [
+                { field: "no", title: "លេខ" },
+                { field: "c", title: "C" }
+            ]
+        });
+
+        $("#gd").kendoGrid({
+            dataSource: dDS,
+            autoBind: false,
+            sortable: true,
+            columns: [
+                { field: "no", title: "លេខ" },
+                { field: "d", title: "D" }
+            ]
+        });
+
+        var sdate = $("#sdatepicker").kendoDatePicker({
+            value: new Date,
+            format: "yyyy-MM-dd"
+        });
+
+        var edate = $("#edatepicker").kendoDatePicker({
+            value: new Date(),
+            format: "yyyy-MM-dd"
+        });
+
+        $("#search").click(function (e) {
+            e.preventDefault();
+
+            app.ds.lotteryRecordDS.query({
+                page: 1,
+                pageSize: 100,
+                filter: [
+                    { field: "types", operator: "eq", value: "NIGHT" },
+                    { field: "dates", operator: ">=", value: new Date(sdate.val()) },
+                    { field: "dates", operator: "<=", value: new Date(edate.val()) }
+                ]
+            });
+            app.ds.lotteryRecordDS.bind("requestEnd", function (e) {
+                var data = e.response.Data;
+
+                for (i = 0; i < 100; i++) {
+                    var a1 = 0, a2 = 0, a3 = 0, a4 = 0, b = 0, c = 0, d = 0;
+
+                    for (j = 0; j < data.length; j++) {
+                        var value = data[j];
+
+                        if (value.a1 == i) { a1++ };
+                        if (value.a2 == i) { a2++ };
+                        if (value.a3 == i) { a3++ };
+                        if (value.a4 == i) { a4++ };
+                        if (value.b == i) { b++ };
+                        if (value.c == i) { c++ };
+                        if (value.d == i) { d++ };
+                    }
+
+                    a1DS.add(
+                         { "no": i, "a1": a1 }
+                    );
+                    a2DS.add(
+                         { "no": i, "a2": a1 }
+                    );
+                    a3DS.add(
+                         { "no": i, "a3": a1 }
+                    );
+                    a4DS.add(
+                         { "no": i, "a4": a1 }
+                    );
+                    bDS.add(
+                         { "no": i, "b": b }
+                    );
+                    cDS.add(
+                         { "no": i, "c": c }
+                    );
+                    dDS.add(
+                         { "no": i, "d": d }
+                    );
+                }
+            });
+        });
+
+
+    });
+
+    $(function () {
+        app.router.start();
+    });
+</script>

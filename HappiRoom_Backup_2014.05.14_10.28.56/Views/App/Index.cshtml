@@ -1,0 +1,418 @@
+﻿@{
+    ViewBag.Title = "Happy Room | AppStore";
+}
+
+<div id="wrapperApplication"></div>
+
+<!--views-->
+<script id="layout" type="text/x-kendo-template">
+    <div id="layout-view">
+    </div>
+</script>
+<script id="404" type="text/x-kendo-template">
+    <div class="container-fluid menu-hidden sidebar-hidden-phone fluid menu-left">
+        <div class="row">
+            <div class="span12">
+                <div>
+                    <h3>Oops! We are running into a wall</h3>
+                    <p>Try going <a href="\\#">back</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+<script id="index" type="text/x-kendo-template">
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="innerLR">
+                <div id="content"></div>
+            </div>
+        </div>
+    </div>
+</script>
+<script id="home" type="text/x-kendo-template">
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12">
+                <ul>
+                    <li>
+                        <a href="/app#customers">CUSTOMER | អតិថីជន</a>
+                    </li>
+                    <li>
+                        <a href="/app#readings">READING | អំនាន</a>
+                    </li>
+                    <li>
+                        <a href="/app#rooms">ROOM | បន្ទប់</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="customerCenter" type="text/x-kendo-template">
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12">
+                
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="customer" type="text/x-kendo-template">
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12">
+                <h3>អតិថិជន</h3>
+                <div id="grid"></div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="reading" type="text/x-kendo-template">
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span12">
+                <h3>អំនាន</h3>
+                <div id="grid"></div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script id="room" type="text/x-kendo-template">    
+    <div class="row-fluid">
+        <div class="span12">
+            <div id="example" class="k-content">
+                <h1>ROOM | បន្ទប់</h1>
+
+                <input id="number" class="k-textbox" data-bind="value: searchField" placeholder="លេខបន្ទប់" />
+                <input data-role="dropdownlist"                   
+                    data-value-primitive="true"
+                    data-text-field="name"
+                    data-value-field="id"
+                    data-bind="value: status, source: statusList"
+                    data-option-label="(--- រើសស្ថានភាព ---)"
+                />
+                <a class="k-button" data-bind="click: search"><span class="k-icon k-i-search"></span></a>
+               
+                <br><br>
+
+                <button id="openButton" class="k-button">បញ្ចូលបន្ទប់ថ្មី</button>
+
+                <div id="grid" data-role="grid" 
+                    data-bind="source: roomList"
+                    data-auto-bind="false"                      
+                    data-row-template="roomRowTemplate"                                      
+                    data-columns='[{ title: "លេខបន្ទប់" },
+                        { title: "ពណ៌នា" },
+                        { title: "ស្ថានភាព" }                                                                     
+                    ]'>
+                </div>
+
+                <div id="window">                    
+                    <div id="window" class="k-window-content">
+                        <table>
+                            <tr>
+                                <td>
+                                    លេខបន្ទប់
+                                </td>
+                                <td>
+                                    <input type="textbox" class="k-textbox" data-bind="value: number" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    ពណ៌នា
+                                </td>
+                                <td>
+                                    <input type="textbox" class="k-textbox" data-bind="value: description" />
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div align="right">
+                            <div id="status"></div>
+                            <button id="save" class="k-button">កត់ត្រា</button>
+                        </div>                        
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>  
+</script>
+
+<script id="roomRowTemplate" type="text/x-kendo-tmpl">       
+    <tr>
+        <td>
+            <input id="number" name="number" type="text" class="k-textbox"                   
+                    data-bind="value: number"
+                    placeholder="លេខបន្ទប់"
+                    required data-required-msg="ត្រូវការ លេខបន្ទប់" />
+        </td>             
+        <td>
+            <input id="description" name="description" type="text" class="k-textbox" 
+                    data-bind="value: description" 
+                    placeholder="ពណ៌នា" 
+                    required data-required-msg="ត្រូវការ ពណ៌នា" />
+        </td>                       
+        <td>
+            <input data-role="dropdownlist"                   
+                data-value-primitive="true"
+                data-text-field="name"
+                data-value-field="id"
+                data-bind="value: status, source: statusList"
+                data-option-label="(--- រើសស្ថានភាព ---)"
+            />
+        </td>               
+    </tr>   
+</script>
+
+<script>
+    var app = app || {};
+
+    app.example = (function () {
+        
+
+        var viewModel = kendo.observable({
+
+        });        
+       
+        return {
+            viewModel: viewModel
+        };
+    }());
+
+    app.customerCenter = (function () {
+        
+
+        var viewModel = kendo.observable({
+
+        });        
+       
+        return {
+            viewModel: viewModel
+        };
+    }());
+
+    app.customer = (function () {
+        
+
+        var viewModel = kendo.observable({
+
+        });        
+       
+        return {
+            viewModel: viewModel
+        };
+    }());
+
+    app.reading = (function () {
+        
+
+        var viewModel = kendo.observable({
+
+        });        
+       
+        return {
+            viewModel: viewModel
+        };
+    }());
+
+    app.room = (function () {
+        var roomDS = new kendo.data.DataSource({
+            transport: {
+                create: {
+                    url: "/api/Rooms",
+                    contentType: "application/json",
+                    type: "POST"
+                },
+                read: {
+                    url: "/api/Rooms",
+                    contentType: "application/json"
+                },
+                update: {
+                    url: function (room) {
+                        return "/api/Rooms/" + room.id;
+                    },
+                    contentType: "application/json",
+                    type: "PUT"
+                },
+                destroy: {
+                    url: function (room) {
+                        return "/api/Rooms/" + room.id;
+                    },
+                    contentType: "application/json",
+                    type: "DELETE"
+                },
+                parameterMap: function (data, operation) {
+                    return JSON.stringify(data);
+                }
+            },
+            serverPaging: true,
+            serverFiltering: true,
+            serverSorting: true,
+            pageSize: 10,                    
+            schema: {
+                data: "Data",
+                total: "Total",
+                model: {
+                    id: "id"
+                }
+            }
+        });
+
+        var viewModel = kendo.observable({
+            searchField     : "",
+            status          : -1,
+
+            number          : "",
+            description     : "",
+
+            statusList: [
+                {id:0, name:"ទំនេរ"},
+                {id:1, name:"កំពុងប្រើ"}
+            ],
+
+            roomList    : roomDS,
+
+            search     : function(){                
+                var para = Array();
+                var field = this.get("searchField");
+                var status = this.get("status");
+
+                if(field!==""){
+                    para.push(
+                        { field: "number", operator: "startswith", value: field }
+                    );
+                }
+
+                if(status>-1){
+                    para.push(
+                        { field: "status", operator: "eq", value: status }                        
+                    );
+                }
+
+                if(para.length>0){
+                    roomDS.filter(para);
+                }else{
+                    roomDS.filter({ field: "id", operator: "gt", value: 0 });
+                }
+            },
+            add         : function(){
+                roomDS.add({
+                    number      : this.get("number"),
+                    description : this.get("description"),
+                    status      : 1
+                });
+
+                roomDS.sync();
+            },
+            clear       : function(){
+                this.set("number", "");
+                this.set("description", "");
+
+                roomDS.data([]);
+            }
+        });        
+       
+        return {
+            viewModel: viewModel
+        };
+    }());
+
+    /* Application Views */
+    app.view = (function () {
+        var missingModel = kendo.observable({
+            back: function (e) {
+                e.preventDefault();
+                window.history.go(-1);
+            }
+        });
+
+        //Layouts and views
+        var layout = new kendo.Layout("#layout");
+        var index = new kendo.Layout("#index");
+        var missing = new kendo.View("#404", { model: missingModel });
+
+        var customerCenter = new kendo.Layout("#customerCenter", { model: app.customerCenter.viewModel });
+        var customer = new kendo.View("#customer", { model: app.customer.viewModel });
+        var reading = new kendo.View("#reading", { model: app.reading.viewModel });
+        var room = new kendo.View("#room", { model: app.room.viewModel });
+
+        return {
+            layout: layout,
+            index: index,
+            missing: missing,
+            
+            customerCenter: customerCenter,
+            customer    : customer,
+            reading     : reading,
+            room        : room
+        };
+    }());
+
+    /* Router section */
+    app.router = new kendo.Router({
+        init: function () {
+            app.view.layout.render("#wrapperApplication");
+        },
+        routeMissing: function (e) {
+            app.view.layout.showIn("#layout-view", app.view.missing);
+        }
+    });
+
+    app.router.route("/", function () {
+        app.view.layout.showIn("#layout-view", app.view.home);
+    });
+
+    app.router.route("customer_single", function(){
+        
+    });
+
+    app.router.route("rooms", function(){
+        app.view.layout.showIn("#layout-view", app.view.room);        
+
+        $("#window").kendoWindow({
+            actions: ["Close"],
+            draggable: false,
+            visible: false,            
+            modal: true,                      
+            title: "បន្ទប់ថ្មី",
+            height: "auto",
+            width: "auto"
+        });
+
+        $("#openButton").click(function(){            
+            var win = $("#window").data("kendoWindow");
+            win.center();
+            win.open();
+        });
+
+        var validator = $("#example").kendoValidator().data("kendoValidator"),
+            status = $("#status");
+
+        $("#save").click(function(e){
+            e.preventDefault();
+                        
+            if(validator.validate()){
+                app.room.viewModel.add();
+
+                status.text("កត់ត្រាបានសំរេច")
+                    .removeClass("alert alert-error")
+                    .addClass("alert alert-success");
+            }else{                  
+                status.text("សូមត្រួតពិនិត្រឪ្យបានត្រឹមត្រូវម្ដងទៀត")
+                    .removeClass("alert alert-success")
+                    .addClass("alert alert-error");
+            }
+        });
+    });
+
+    $(function () {
+        app.router.start();
+    });
+</script>
